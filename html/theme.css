@@ -1,0 +1,33 @@
+
+
+table, th, td {
+    border: 1px solid;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    text-align: right;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+td.no.notGraded, td.zeroPoints.notGraded {
+    color: rgba(255, 0, 0);
+}
+
+td.no.isGraded, td.zeroPoints.isGraded {
+    background-color: rgba(255, 0, 0, 0.3);
+}
+td.partialPoints {
+    background-color: rgba(128, 128, 0, 0.3);
+}
+td.yes, td.fullPoints {
+    background-color: rgba(0, 255, 0, 0.3);
+}
+
+td.parentExercise {
+    font-style: italic;
+}

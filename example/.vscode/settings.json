@@ -1,0 +1,62 @@
+{
+    // specify the exam questions/points
+    "grading.exercises": {
+        "E1": {
+            "subExercises": {
+                "1": 2,
+                "2": 2,
+                "3": 2,
+                "4": 3,
+            }
+        },
+        "E2": {
+            "subExercises": {
+                "1": 2,
+                "2": 3,
+                "2B": 2,
+                "3": 3,
+                "_order": ["1", "2", "2B"]
+            }
+        },
+    },
+
+    // specify the file naming used
+    "grading.examFiles.globPattern": "**/*.R",
+    "grading.examFiles.pattern": "^exams[/\\\\](\\d*).*\\.R$",
+    "grading.examFiles.solutionFiles": [
+        "solutionEx1.R",
+        "solutionEx2.R"
+    ],
+
+    // pattern to indicate start/end of exercises
+    "grading.exercise.startRegex": "^## (E?\\dB?)",
+    "grading.exercise.endRegex": "^##//",
+
+    // pattern/template to indicate grading comments
+    "grading.comment.regex": "##GC:? ?(.*)$",
+    "grading.comment.template": "##GC: %content%",
+
+    // patterns/templates for comments containing points
+    "grading.comment.pointsRegex": "^ ?((\\d\\.\\d|\\?\\?)/\\d\\.\\dpts) *\\(?(.*?)\\)?$",
+    "grading.comment.pointsTemplate": "%points%/%total%pts",
+    "grading.comment.pointsTemplateWithRemark": "%points%/%total%pts (%remark%)",
+    "grading.comment.pointsPlaceHolder": "??",
+    "grading.comment.fullPointsRegex": "(full pts) *(.*)$",
+
+    // appearance
+    "grading.codeLens.showCodeLenses": true,
+    "grading.deco.exerciseBackground": true,
+    "grading.webview.selectExerciseOnClick": false,
+    "grading.deco.showDebugInfo": false,
+
+    // behavior
+    "grading.codeLens.pointSteps": 0.5,
+    "grading.confirmModifications": false,
+    "grading.allowMultipleParsedExercises": false,
+    "grading.allowMultiplePointsComments": false,
+    "grading.keybindings.enable": true,
+    "grading.typeDelay": 100,
+
+    // Gilens line deco can interfere with ours
+    "gitlens.currentLine.enabled": false, 
+}

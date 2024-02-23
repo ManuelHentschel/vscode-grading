@@ -1,0 +1,17 @@
+
+{
+    "compilerOptions": {
+        "module": "ES2022",
+        "target": "es2018",
+        "lib": [
+            "es2018",
+            "DOM"
+        ],
+        "sourceMap": true,
+        "rootDir": ".",
+        "strict": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noFallthroughCasesInSwitch": true
+    }
+}

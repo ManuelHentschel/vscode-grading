@@ -1,0 +1,355 @@
+{
+	"name": "vscode-grading",
+	"displayName": "Grading",
+	"description": "Grading exams in vscode",
+	"publisher": "manhen",
+	"author": {
+		"name": "Manuel Hentschel"
+	},
+	"version": "0.0.1",
+	"license": "MIT",
+	"icon": "img/icon.png",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ManuelHentschel/vscode-github-linker"
+	},
+	"bugs": {
+		"url": "https://github.com/ManuelHentschel/vscode-github-linker/issues"
+	},
+	"engines": {
+		"vscode": "^1.73.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onStartupFinished"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "vscode-grading.formatAllOpen",
+				"title": "Format All Open",
+				"category": "Grading"
+			},
+			{
+				"command": "vscode-grading.normalizePointsComments",
+				"title": "Normalize Points Comments",
+				"category": "Grading"
+			},
+			{
+				"command": "vscode-grading.addPointsComments",
+				"title": "Add Points Comments",
+				"category": "Grading"
+			},
+			{
+				"command": "vscode-grading.checkPoints",
+				"title": "Check exercise points",
+				"category": "Grading"
+			},
+			{
+				"command": "vscode-grading.checkPresent",
+				"title": "Check exercises present",
+				"category": "Grading"
+			},
+			{
+				"command": "vscode-grading.checkGraded",
+				"title": "Check exercises graded",
+				"category": "Grading"
+			},
+			{
+				"command": "vscode-grading.incrementAtCursor",
+				"title": "Increment points at cursor",
+				"category": "Grading"
+			},
+			{
+				"command": "vscode-grading.decrementAtCursor",
+				"title": "Decrement points at cursor",
+				"category": "Grading"
+			},
+			{
+				"command": "vscode-grading.setPointsAtCursor",
+				"title": "Set points at cursor",
+				"category": "Grading"
+			},
+			{
+				"command": "vscode-grading.insertCommentAtCursor",
+				"title": "Insert comment at cursor",
+				"category": "Grading"
+			},
+			{
+				"command": "vscode-grading.insertCommentAtCursorWithLine",
+				"title": "Insert comment at cursor with line",
+				"category": "Grading"
+			},
+			{
+				"command": "vscode-grading.showSolution",
+				"title": "Show solution",
+				"category": "Grading"
+			},
+			{
+				"command": "vscode-grading.showExercise",
+				"title": "Show exercise",
+				"category": "Grading"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "vscode-grading.setPointsAtCursor",
+				"key": "ctrl+k 0",
+				"when": "config.grading.keybindings.enable",
+				"args": 0
+			},
+			{
+				"command": "vscode-grading.setPointsAtCursor",
+				"key": "ctrl+k 1",
+				"when": "config.grading.keybindings.enable",
+				"args": 1
+			},
+			{
+				"command": "vscode-grading.setPointsAtCursor",
+				"key": "ctrl+k 2",
+				"when": "config.grading.keybindings.enable",
+				"args": 2
+			},
+			{
+				"command": "vscode-grading.setPointsAtCursor",
+				"key": "ctrl+k 3",
+				"when": "config.grading.keybindings.enable",
+				"args": 3
+			},
+			{
+				"command": "vscode-grading.setPointsAtCursor",
+				"key": "ctrl+k 4",
+				"when": "config.grading.keybindings.enable",
+				"args": 4
+			},
+			{
+				"command": "vscode-grading.setPointsAtCursor",
+				"key": "ctrl+k 5",
+				"when": "config.grading.keybindings.enable",
+				"args": 5
+			},
+			{
+				"command": "vscode-grading.setPointsAtCursor",
+				"key": "ctrl+k 6",
+				"when": "config.grading.keybindings.enable",
+				"args": 6
+			},
+			{
+				"command": "vscode-grading.setPointsAtCursor",
+				"key": "ctrl+k 7",
+				"when": "config.grading.keybindings.enable",
+				"args": 7
+			},
+			{
+				"command": "vscode-grading.setPointsAtCursor",
+				"key": "ctrl+k 8",
+				"when": "config.grading.keybindings.enable",
+				"args": 8
+			},
+			{
+				"command": "vscode-grading.setPointsAtCursor",
+				"key": "ctrl+k 9",
+				"when": "config.grading.keybindings.enable",
+				"args": 9
+			},
+			{
+				"command": "vscode-grading.setPointsAtCursor",
+				"key": "ctrl+k Backspace",
+				"when": "config.grading.keybindings.enable"
+			},
+			{
+				"command": "vscode-grading.incrementAtCursor",
+				"key": "ctrl+k =",
+				"when": "config.grading.keybindings.enable"
+			},
+			{
+				"command": "vscode-grading.decrementAtCursor",
+				"key": "ctrl+k -",
+				"when": "config.grading.keybindings.enable"
+			}
+		],
+		"configuration": {
+			"type": "object",
+			"title": "grading",
+			"properties": {
+				"grading.webview.selectExerciseOnClick": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Whether to select the exercise when clicking on it in a webview."
+				},
+				"grading.typeDelay": {
+					"type": "number",
+					"default": 200,
+					"markdownDescription": "Delay in ms before running a command after a text change."
+				},
+				"grading.keybindings.enable": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Whether to enable keybindings provided by this extension."
+				},
+				"grading.codeLens.showCodeLenses": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Whether to show code Lenses."
+				},
+				"grading.codeLens.pointSteps": {
+					"type": "number",
+					"default": 0.5,
+					"markdownDescription": "Step size for points in code Lenses."
+				},
+				"grading.deco.showDebugInfo": {
+					"type": "boolean",
+					"default": false,
+					"markdownDescription": "Whether to show debug info in the decoration."
+				},
+				"grading.deco.exerciseBackground": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Whether to change the background color of exercises."
+				},
+				"grading.confirmModifications": {
+					"type": "boolean",
+					"default": true,
+					"markdownDescription": "Whether to ask for confirmation before modifying files."
+				},
+				"grading.allowMultiplePointsComments": {
+					"type": "boolean",
+					"default": false,
+					"markdownDescription": "Whether to allow multiple (additive) points comments for a single question."
+				},
+				"grading.allowMultipleParsedExercises": {
+					"type": "boolean",
+					"default": false,
+					"markdownDescription": "Whether to allow the same exercise to be answered in multiple parts."
+				},
+				"grading.exercise.startRegex": {
+					"type": "string",
+					"markdownDescription": "RegExp with one capture group (1. `exercise name`). Applied to each line of code.",
+					"default": "^## (\\d+)"
+				},
+				"grading.exercise.endRegex": {
+					"type": [
+						"string",
+						"null"
+					],
+					"markdownDescription": "An optional search pattern, indicating the end of an exercise.",
+					"default": null
+				},
+				"grading.comment.pointsPlaceHolder": {
+					"type": "string",
+					"markdownDescription": "Placeholder for points comments before grading.",
+					"default": "??"
+				},
+				"grading.comment.pointsTemplate": {
+					"type": "string",
+					"markdownDescription": "Template for content of a points comment with total. Can contain `%points%` and `%total%` and match the regex.",
+					"default": "%points%/%total%pts"
+				},
+				"grading.comment.pointsTemplateWithRemark": {
+					"type": "string",
+					"markdownDescription": "Template for content of a points comment with total. Can contain `%points%`, `%total%`, and %remark% and must match the regex.",
+					"default": "%points%/%total%pts (%remark%)"
+				},
+				"grading.comment.template": {
+					"type": "string",
+					"markdownDescription": "Template for a comment. Must contain `%content%` and match the regex.",
+					"default": "##GC: %content%"
+				},
+				"grading.comment.regex": {
+					"type": "string",
+					"markdownDescription": "RegExp with one capture group (the content of the comment). Applied to each line of code.",
+					"default": "##GC: (.*)$"
+				},
+				"grading.comment.pointsRegex": {
+					"type": "string",
+					"markdownDescription": "RegExp with three capture groups (1. `points/totalPoints`, 2. `points`, 3. `remark`). Applied to the content of each comment.",
+					"default": "^ ?((\\d\\.\\d)/\\d\\.\\dpts) *\\(?(.*?)\\)?$"
+				},
+				"grading.comment.fullPointsRegex": {
+					"type": "string",
+					"markdownDescription": "RegExp with two capture groups (1. `to be overwritten with X/X pts`, 2. `remark`). Applied to the content of each comment.",
+					"default": "(full pts) *(.*)$"
+				},
+				"grading.examFiles.globPattern": {
+					"type": "string",
+					"description": "Glob pattern to find candidates for exam and solution files.",
+					"default": "**/*"
+				},
+				"grading.examFiles.pattern": {
+					"type": "string",
+					"default": "(.*)",
+					"markdownDescription": "RegExp with one capture group (1. `student id`) that indicates an exam file path if matched."
+				},
+				"grading.examFiles.solutionFiles": {
+					"type": "array",
+					"default": [],
+					"items": {
+						"type": "string"
+					},
+					"markdownDescription": "Filenames of solution files."
+				},
+				"grading.exercises": {
+					"type": ["object", "array"],
+					"description": "Exercises. List of objects with `.name` or object with entries `name=atomicPoints` or `name=object`",
+					"properties": {
+						"_order": {
+							"type": "array",
+							"items": "string",
+							"description": "Display order of exercises in webivews"
+						}
+					},
+					"patternProperties": {
+						".*": {
+							"type": ["number", "object"]
+						}
+					},
+					"items": {
+						"type": "object",
+						"properties": {
+							"name": {
+								"type": "string",
+								"description": "Name of the exercise as returned by search-replace-pattern",
+								"default": ""
+							},
+							"atomicPoints": {
+								"type": "number",
+								"description": "Points for this exercise (excluding points for sub-exercises)",
+								"default": 0
+							},
+							"subExercises": {
+								"type": ["object", "array"],
+								"description": "Sub-exercises",
+								"items": {
+									"type": "object",
+									"description": "(An exercise, possibly nested further, same format as top-level exercise)"
+								}
+							}
+						},
+						"required": [
+							"name"
+						]
+					}
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "yarn run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"watchHtml": "tsc -watch -p ./html/",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/node": "14.x",
+		"@types/vscode": "^1.73.0",
+		"@typescript-eslint/eslint-plugin": "^4.26.0",
+		"@typescript-eslint/parser": "^4.26.0",
+		"eslint": "^7.27.0",
+		"typescript": "^4.9.2"
+	}
+}
