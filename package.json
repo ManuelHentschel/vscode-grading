@@ -292,7 +292,10 @@
 					"markdownDescription": "Filenames of solution files."
 				},
 				"grading.exercises": {
-					"type": ["object", "array"],
+					"type": [
+						"object",
+						"array"
+					],
 					"description": "Exercises. List of objects with `.name` or object with entries `name=atomicPoints` or `name=object`",
 					"properties": {
 						"_order": {
@@ -303,7 +306,10 @@
 					},
 					"patternProperties": {
 						".*": {
-							"type": ["number", "object"]
+							"type": [
+								"number",
+								"object"
+							]
 						}
 					},
 					"items": {
@@ -320,7 +326,10 @@
 								"default": 0
 							},
 							"subExercises": {
-								"type": ["object", "array"],
+								"type": [
+									"object",
+									"array"
+								],
 								"description": "Sub-exercises",
 								"items": {
 									"type": "object",
@@ -346,7 +355,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "14.x",
-		"@types/vscode": "^1.73.0",
+		"@types/vscode": "^1.88.0",
 		"@typescript-eslint/eslint-plugin": "^4.26.0",
 		"@typescript-eslint/parser": "^4.26.0",
 		"eslint": "^7.27.0",
