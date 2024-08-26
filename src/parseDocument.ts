@@ -5,7 +5,6 @@ import { getConfig, getConfigExercises, getParsePatterns } from './readConfig';
 import { assertMinArrayLength, execRegExp } from './utils';
 
 
-
 export function parseAndMatchDoc(doc: vscode.TextDocument, id?: string): types.MatchedDocument {
     id ||= doc.fileName;
     console.log(`Parse and match: ${id}`);

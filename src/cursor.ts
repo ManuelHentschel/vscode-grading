@@ -7,7 +7,7 @@ import { changePoints } from './modifyDocs';
 import { getConfig } from './readConfig';
 
 
-export async function incrementAtCursor(inc?: number, negative: boolean = false): Promise<PointComment | undefined> {
+export async function incrementAtCursor(inc?: number, negative: boolean = false): Promise<undefined> {
     const config = getConfig();
     if(inc === undefined){
         inc = config.get('codeLens.pointSteps', 1);
@@ -15,17 +15,18 @@ export async function incrementAtCursor(inc?: number, negative: boolean = false)
     if(negative){
         inc *= -1;
     }
-    return changePointsAtCursor(inc, true);
+    changePointsAtCursor(inc, true);
+    return;
 }
 
-export async function changePointsAtCursor(newScore: number | undefined, isDiff: boolean, isSnippet?: boolean): Promise<PointComment | undefined> {
+export async function changePointsAtCursor(newScore: number | undefined, isDiff: boolean, isSnippet?: boolean): Promise<undefined> {
     const editor = vscode.window.activeTextEditor;
     if(!editor){
-        return undefined;
+        return;
     }
     const doc = editor.document;
     const pos = editor.selection.active;
-    return await changePointsAtPos(doc, pos, newScore, isDiff, isSnippet);
+    await changePointsAtPos(doc, pos, newScore, isDiff, isSnippet);
 }
 
 export function getExAtCursor(refresh = true): (
@@ -47,16 +48,16 @@ export async function changePointsAtPos(
     newScore: number | undefined,
     isDiff: boolean,
     isSnippet?: boolean,
-): Promise<PointComment | undefined> {
+): Promise<undefined> {
     const [mex, pex] = getExAtPosition(doc, pos);
     if(!mex){
-        return undefined;
+        return;
     }
     const mdoc = getDocTracker().getMatchedDoc(doc);
     if(!mdoc){
-        return undefined;
+        return;
     }
-    return await changePoints(newScore, isDiff, mdoc, mex, pex, undefined, isSnippet);
+    await changePoints(newScore, isDiff, mdoc, mex, pex, undefined, isSnippet);
 }
 
 export function getExAtPosition(doc: vscode.TextDocument, pos: vscode.Position, refresh = true): (

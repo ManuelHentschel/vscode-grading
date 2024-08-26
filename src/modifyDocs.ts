@@ -100,12 +100,14 @@ export function addPointsComment(
     ex: Exercise,
     parsedEx: ParsedExercise,
     edit: vscode.WorkspaceEdit,
-    config?: vscode.WorkspaceConfiguration
+    config?: vscode.WorkspaceConfiguration,
+    points: number | undefined = undefined,
+    needsConfirmation: boolean | undefined = undefined,
 ): void {
     config ||= getConfig();
-    const needsConfirmation = config.get<boolean>('confirmModifications', true);
+    needsConfirmation ??= config.get<boolean>('confirmModifications', true);
     const rng = parsedEx.range;
-    const content = makePointsCommentContent(undefined, ex.atomicPoints, '', config);
+    const content = makePointsCommentContent(points, ex.atomicPoints, '', config);
     const newTxt = makeComment(content, config);
     edit.insert(parsedEx.document.uri, rng.end, `\n${newTxt}\n`, {
         needsConfirmation: needsConfirmation,
@@ -165,34 +167,77 @@ export async function changePoints(
     pex?: ParsedExercise,
     pcomm?: PointComment,
     isSnippet?: boolean,
-): Promise<PointComment | undefined> {
+    addIfMissing = true,
+): Promise<undefined> {
     pcomm = identifyPointsComment(mex, pex, pcomm);
     if(!pcomm){
-        return undefined;
-    }
-    if(isDiff){
-        newScore = pcomm.pointsScore + (newScore || 0);
-        if(newScore < 0){
-            newScore = 0;
+        if(!addIfMissing){
+            return;
+        }
+        pex ||= mex.parsedExercises[0];
+        if(!pex){
+            return; // if no parsed points comment, and no parsed exercise, we cannot add points anywhere
+            // this check is relied upon below
         }
     }
+
+    if(isDiff){
+        newScore = Math.max((pcomm?.pointsScore || 0) + (newScore || 0), 0);
+    }
+
+    const remark = pcomm?.remark.text || '';
+    let newTxt = makePointsCommentContent(newScore, mex.atomicPoints, remark, undefined, isSnippet);
+    if(!pcomm){ // if no points comment, we need to add spacing around the new text
+        newTxt = `\n${makeComment(newTxt)}\n`;
+    }
+
     const editor = getVisibleEditors(mDoc.document)[0];
-    isSnippet &&= !!editor;
-    const newTxt = makePointsCommentContent(newScore, mex.atomicPoints, pcomm.remark.text, undefined, isSnippet);
-    if(editor && isSnippet){
+    if(isSnippet && editor){
+        let posOrRng: vscode.Position | vscode.Range;
+        if(!pcomm){
+            // we checked above that pex is not undefined
+            posOrRng = pex!.range.end; // add points after exercise
+        } else{
+            posOrRng = pcomm.content.range; // replace existing points comment
+        }
         const snippet = new vscode.SnippetString(newTxt);
-        await editor.insertSnippet(snippet, pcomm.content.range);
+        await editor.insertSnippet(snippet, posOrRng);
+        getDocTracker().handleChangeTextDocument();
+        return;
+    }
+
+    const edit = new vscode.WorkspaceEdit();
+    if (!pcomm){
+        // we checked above that pex is not undefined
+        edit.insert(mDoc.document.uri, pex!.range.end, newTxt, {
+            needsConfirmation: false,
+            label: 'Add Points'
+        });
     } else {
-        const edit = new vscode.WorkspaceEdit();
         edit.replace(mDoc.document.uri, pcomm.content.range, newTxt, {
             needsConfirmation: false,
             label: 'Change Points'
         });
-        await vscode.workspace.applyEdit(edit);
-        getDocTracker().handleChangeTextDocument();
     }
-    // The range of this comment might have changed, so we will need to re-parse it!
-    return pcomm;
+    await vscode.workspace.applyEdit(edit);
+    getDocTracker().handleChangeTextDocument();
+}
+
+export async function addOnePointsComment(
+    newScore: number | undefined,
+    mDoc: MatchedDocument,
+    mex: MatchedExercise,
+    isSnippet?: boolean,
+): Promise<undefined> {
+    const edit = new vscode.WorkspaceEdit();
+    const pex = mex.parsedExercises[0];
+    if(!pex){
+        return;
+    }
+    addPointsComment(mex, pex, edit, undefined, newScore, false);
+    await vscode.workspace.applyEdit(edit);
+    getDocTracker().handleChangeTextDocument();
+    return;
 }
 
 export function identifyPointsComment(

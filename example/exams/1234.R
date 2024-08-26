@@ -3,13 +3,14 @@
 ## 1
 print(1)
 
-##GC: 2.0/2.0pts
+##GC: 2.0/2.0pts ()
 
 ## 2
 print(2)
 print(20)
 
-##GC: 1.0/2.0pts
+
+##GC: 2.0/2.0pts ()
 
 ## 3
 f <- function(a){

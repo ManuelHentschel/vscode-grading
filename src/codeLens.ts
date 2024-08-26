@@ -41,7 +41,7 @@ function toggleCodeLens(): void {
     const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
     if(!workspaceFolder){
         console.log('Cannot register CodeLens: No workspace folder!');
-        return undefined;
+        return;
     }
     const pattern = new vscode.RelativePattern(
         workspaceFolder,
