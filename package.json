@@ -245,7 +245,7 @@
 				},
 				"grading.comment.pointsTemplate": {
 					"type": "string",
-					"markdownDescription": "Template for content of a points comment with total. Can contain `%points%` and `%total%` and match the regex.",
+					"markdownDescription": "Template for content of a points comment with total. Can contain `%points%` and `%total%` and must match the regex.",
 					"default": "%points%/%total%pts"
 				},
 				"grading.comment.pointsTemplateWithRemark": {
@@ -266,7 +266,7 @@
 				"grading.comment.pointsRegex": {
 					"type": "string",
 					"markdownDescription": "RegExp with three capture groups (1. `points/totalPoints`, 2. `points`, 3. `remark`). Applied to the content of each comment.",
-					"default": "^ ?((\\d\\.\\d)/\\d\\.\\dpts) *\\(?(.*?)\\)?$"
+					"default": "^ ?((\\d\\.\\d|\\?\\?)/\\d\\.\\dpts) *\\(?(.*?)\\)?$"
 				},
 				"grading.comment.fullPointsRegex": {
 					"type": "string",
@@ -301,7 +301,7 @@
 						"_order": {
 							"type": "array",
 							"items": "string",
-							"description": "Display order of exercises in webivews"
+							"description": "Display order of exercises in webviews"
 						}
 					},
 					"patternProperties": {
