@@ -65,13 +65,13 @@ function handleWebviewMessage(panel: vscode.WebviewPanel, message: OutMessage): 
     // console.log('Received message in webview.ts:');
     // console.log(message);
     if(message.message === 'mouseClick'){
-        handleMouseClickMessage(panel, message);
+        void handleMouseClickMessage(panel, message);
     } else if(message.message === 'log'){
         console.log(message.body);
     }
 }
 
-function handleMouseClickMessage(panel: vscode.WebviewPanel, message: CellClickMessage): void {
+async function handleMouseClickMessage(panel: vscode.WebviewPanel, message: CellClickMessage): Promise<void> {
     if(message.button !== 0 || !message.ctrlKey){
         return;
     }
@@ -107,7 +107,7 @@ function handleMouseClickMessage(panel: vscode.WebviewPanel, message: CellClickM
             selection = new vscode.Range(selection.start, selection.start);
         }
     }
-    vscode.window.showTextDocument(
+    const editor = await vscode.window.showTextDocument(
         doc,
         {
             preview: true,
@@ -115,6 +115,9 @@ function handleMouseClickMessage(panel: vscode.WebviewPanel, message: CellClickM
             selection: selection
         }
     );
+    if(selection){
+        editor.revealRange(selection, vscode.TextEditorRevealType.AtTop);
+    }
 }
 
 
