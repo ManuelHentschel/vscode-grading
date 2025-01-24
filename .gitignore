@@ -8,3 +8,5 @@ html/*.js.map
 
 temp.*
 *.temp
+
+*.zip

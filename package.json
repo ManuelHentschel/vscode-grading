@@ -348,6 +348,7 @@
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
 		"compile": "tsc -p ./",
+		"compileHtml": "tsc -p ./html/",
 		"watch": "tsc -watch -p ./",
 		"watchHtml": "tsc -watch -p ./html/",
 		"lint": "eslint src --ext ts",
