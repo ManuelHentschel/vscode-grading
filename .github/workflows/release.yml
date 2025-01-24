@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: yarn install --frozen-lockfile
-      - run: yarn run compileHtml
+      - run: npm run compileHtml
       - uses: lannonbr/vsce-action@master
         with:
           args: "package"

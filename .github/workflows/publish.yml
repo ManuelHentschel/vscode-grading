@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: yarn install --frozen-lockfile
-      - run: yarn run compileHtml
+      - run: npm run compileHtml
       - uses: lannonbr/vsce-action@4.0.0
         with:
           args: "publish -p $VSCE_TOKEN"
