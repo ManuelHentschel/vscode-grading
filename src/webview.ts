@@ -60,8 +60,13 @@ function getWebviewPanel(type: WebviewType): vscode.WebviewPanel {
 
 export async function refreshWebviews(): Promise<void> {
     for(const [type, panel] of webviewMap.entries()){
-        const html = await makeTableHtml(type, panel);
-        panel.webview.html = html;
+        if(isTableType(type)){
+            panel.webview.html = await makeTableHtml(type, panel);
+        } else if(type === 'grading.overview'){
+            panel.webview.html = await makeOverviewHtml(panel);
+        } else {
+            console.log('Unknown webview type: ', type);
+        }
     }
 }
 

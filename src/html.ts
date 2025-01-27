@@ -97,3 +97,33 @@ export class HTMLTable extends HTMLElement {
         this.classes.push('table');
     }
 }
+
+export class HTMLHeading extends HTMLElement {
+    constructor(level: number, content: string){
+        super(`h${level}`, [content]);
+    }
+}
+
+export class HTMLDiv extends HTMLElement {
+    constructor(content?: (string | HTMLElement)[], id?: string){
+        super('div', content);
+        this.id = id;
+    }
+}
+
+export class HTMLHeadedSection extends HTMLElement {
+    constructor(level: number, title: string, content?: (string | HTMLElement)[]){
+        if(content === undefined) {
+            content = [];
+        } else if(typeof content === 'string'){
+            content = [content];
+        }
+        super('section', [new HTMLHeading(level, title), ...content]);
+    }
+}
+
+export class HTMLBody extends HTMLElement {
+    constructor(content?: (string | HTMLElement)[]){
+        super('body', content);
+    }
+}
