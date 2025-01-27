@@ -1,5 +1,3 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { parseAllFilesToCsvFile, parseAllFilesToJsonFile } from './export';
 import { openWebview } from './webview';
@@ -9,6 +7,7 @@ import { registerCodeLens } from './codeLens';
 import { changePointsAtCursor, incrementAtCursor } from './cursor';
 import { initDocProvider, showExercise, showSolution } from './solution';
 import { appendComment, changeLine } from './comments';
+import { openOverviewWebview } from './overview';
 
 let extensionContext: vscode.ExtensionContext | undefined = undefined;
 export function getContext(): vscode.ExtensionContext {
@@ -91,6 +90,10 @@ export function activate(context: vscode.ExtensionContext) {
 			inc = undefined;
 		}
 		incrementAtCursor(inc, true);
+	});
+
+	vscode.commands.registerCommand('vscode-grading.openOverview', () => {
+		openOverviewWebview();
 	});
 }
 

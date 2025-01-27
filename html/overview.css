@@ -1,0 +1,23 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+#config, #exam-files, #solution-files, #template-config, #identified-exams, #points-tables {
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#config-content, #exam-files-content, #solution-files-content, #template-config-content, #identified-exams-content, #points-tables-content {
+    font-size: 14px;
+    color: #666;
+}
