@@ -5,7 +5,8 @@ import { getConfig, makeFlatExercises } from './readConfig';
 import { adjustRange, getCoveredRange } from './utils';
 import { getFirstLineRange } from './utils';
 import { getLastLineRange } from './utils';
-import { exIsGraded, pointsToString } from './webview';
+import { exIsGraded } from './webviewTables';
+import { pointsToString } from './webview';
 import { RangeOption } from './utils';
 
 

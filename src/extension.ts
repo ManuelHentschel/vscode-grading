@@ -1,8 +1,5 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { parseAllFilesToCsvFile, parseAllFilesToJsonFile } from './export';
-import { openWebview } from './webview';
+import { openTableWebview, openWebview } from './webview';
 import { addPointsCommentsForAll, normalizePointsForActive, normalizePointsForAll } from './modifyDocs';
 import { getDocTracker } from './docTracker';
 import { registerCodeLens } from './codeLens';
@@ -57,13 +54,13 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 	
 	vscode.commands.registerCommand('vscode-grading.checkPoints', () => {
-		openWebview('points');
+		openTableWebview('points');
 	});
 	vscode.commands.registerCommand('vscode-grading.checkPresent', () => {
-		openWebview('present');
+		openTableWebview('present');
 	});
 	vscode.commands.registerCommand('vscode-grading.checkGraded', () => {
-		openWebview('graded');
+		openTableWebview('graded');
 	});
 	
 	vscode.commands.registerCommand('vscode-grading.setPointsAtCursor', async (newScore?: number, ...rest: unknown[]) => {
@@ -91,6 +88,10 @@ export function activate(context: vscode.ExtensionContext) {
 			inc = undefined;
 		}
 		incrementAtCursor(inc, true);
+	});
+
+	vscode.commands.registerCommand('vscode-grading.openOverview', () => {
+		openWebview('grading.overview');
 	});
 }
 

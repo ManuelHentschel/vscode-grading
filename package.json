@@ -92,6 +92,11 @@
 				"command": "vscode-grading.showExercise",
 				"title": "Show exercise",
 				"category": "Grading"
+				},
+			{
+				"command": "vscode-grading.openOverview",
+				"title": "Open Overview",
+				"category": "Grading"
 			}
 		],
 		"keybindings": [
