@@ -7,9 +7,7 @@ import { arraySum, deepCopy, isDefined, isMDoc } from "./utils";
 
 
 export async function findUris(includeSolution: boolean = false, onlySolution: boolean = false): Promise<vscode.Uri[]> {
-    const config = getConfig();
-    const fileGlob = config.get<string>('examFiles.globPattern', '**/*');
-    let uris = await vscode.workspace.findFiles(fileGlob);
+    let uris = await getGlobMatches();
     uris = uris.filter(uri => {
         const id = verifyUri(uri);
         if(!id){
@@ -24,6 +22,13 @@ export async function findUris(includeSolution: boolean = false, onlySolution: b
         return true;
     });
     uris.sort((a, b) => a.fsPath.localeCompare(b.fsPath));
+    return uris;
+}
+
+export async function getGlobMatches(): Promise<vscode.Uri[]> {
+    const config = getConfig();
+    const fileGlob = config.get<string>('examFiles.globPattern', '**/*');
+    let uris = await vscode.workspace.findFiles(fileGlob);
     return uris;
 }
 

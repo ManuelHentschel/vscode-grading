@@ -1,4 +1,4 @@
-import { findUris } from "./export";
+import { findUris, getGlobMatches } from "./export";
 import { HTMLBody, HTMLDiv, HTMLElement, HTMLHeadedSection, HTMLHeading, HTMLLink } from "./html";
 import { getConfig, getExNames } from "./readConfig";
 import { getErrorMessage } from "./utils";
@@ -45,41 +45,37 @@ function makeCommentsConfigSection(): HTMLHeadedSection {
 
 async function makeExamConfigSection(): Promise<HTMLHeadedSection> {
     // Make html elements for the config entries
-    const configEntries = [
-        'examFiles.globPattern',
-        'examFiles.pattern',
-        'examFiles.solutionFiles',
-    ].map(makeConfigEntry);
     const htmlElements: (HTMLElement | string)[] = [
         'The following configuration entries influence the identification of exams and solution files.<br>',
         'Click on the corresponding link to see details and change the value.<br>',
-        ...configEntries
     ];
 
     // Check if the examFiles.pattern is a valid regex
     const config = getConfig();
     const pattern = config.get('examFiles.pattern', '');
-    let patternError = undefined;
-    try {
-        new RegExp(pattern);
-    } catch (e) {
-        patternError = getErrorMessage(e);
-    }
-    if(patternError !== undefined){
-        htmlElements.push(new HTMLDiv([
-            'Error in examFiles.pattern: ',
-            patternError
-        ]));
+    // Add the found exercises and solutions to the html
+    const globUris = await getGlobMatches();
+    const exUris = await findUris();
+    const exPaths = exUris.map(uri => vscode.workspace.asRelativePath(uri));
+    htmlElements.push(new HTMLDiv([
+        makeConfigEntry('examFiles.globPattern'),
+        `${globUris.length} files found by glob pattern.<br>`,
+        makeConfigEntry('examFiles.pattern'),
+    ]));
+    if(exPaths.length === 0){
+        htmlElements.push('No exercises found');
     } else {
-        // Add the found exercises and solutions to the html
-        const exUris = await findUris();
-        const exPaths = exUris.map(uri => vscode.workspace.asRelativePath(uri));
         htmlElements.push(new HTMLDiv([
             'Exercises found:<br>',
             exPaths.join('<br>')
         ]));
-        const solUris = await findUris(true, true);
-        const solPaths = solUris.map(uri => vscode.workspace.asRelativePath(uri));
+    }
+    const solUris = await findUris(true, true);
+    const solPaths = solUris.map(uri => vscode.workspace.asRelativePath(uri));
+    htmlElements.push(makeConfigEntry('examFiles.solutionFiles'));
+    if(solPaths.length === 0){
+        htmlElements.push('No solutions found');
+    } else {
         htmlElements.push(new HTMLDiv([
             'Solutions found:<br>',
             solPaths.join('<br>')
@@ -88,7 +84,7 @@ async function makeExamConfigSection(): Promise<HTMLHeadedSection> {
 
     return new HTMLHeadedSection(
         2,
-        'Config - Exam',
+        'Config - Exam Files',
         htmlElements
     );
 }
