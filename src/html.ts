@@ -1,6 +1,7 @@
 import { pointsToString } from './webview';
 
 
+type HTMLElementary = HTMLElement | string | (HTMLElement | string)[];
 
 export class HTMLElement {
     tag: string;
@@ -8,10 +9,12 @@ export class HTMLElement {
     attributes: Record<string, string> = {};
     classes: string[] = [];
     
-    constructor(tag: string, content?: (string | HTMLElement)[], attributes?: Record<string, string>){
+    constructor(tag: string, content: HTMLElementary = [], attributes?: Record<string, string>){
         this.tag = tag;
-        if(content){
+        if(Array.isArray(content)){
             this.content = content;
+        } else {
+            this.content = [content];
         }
         if(attributes){
             this.attributes = attributes;
@@ -125,5 +128,12 @@ export class HTMLHeadedSection extends HTMLElement {
 export class HTMLBody extends HTMLElement {
     constructor(content?: (string | HTMLElement)[]){
         super('body', content);
+    }
+}
+
+export class HTMLLink extends HTMLElement {
+    constructor(href: string, content: HTMLElementary){
+        super('a', content);
+        this.attributes.href = href;
     }
 }

@@ -93,6 +93,9 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('vscode-grading.openOverview', () => {
 		openWebview('grading.overview');
 	});
+
+	// For debugging:
+	vscode.commands.executeCommand('vscode-grading.openOverview');
 }
 
 

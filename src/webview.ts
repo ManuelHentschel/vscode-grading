@@ -50,7 +50,10 @@ function getWebviewPanel(type: WebviewType): vscode.WebviewPanel {
         type,
         title,
         vscode.ViewColumn.Active,
-        {enableScripts: true}
+        {
+            enableScripts: true,
+            enableCommandUris: true,
+        }
     );
     newWebview.onDidDispose(() => {webviewMap.delete(type);});
     webviewMap.set(type, newWebview);
