@@ -92,13 +92,22 @@ function convertIndicesToRange(txt: TextWithRange, m: RegExpExecArrayWithIndices
 }
 
 
-export function assertMinArrayLength<T>(arr: T[], length: 1, message?: string): [T, ...T[]];
-export function assertMinArrayLength<T>(arr: T[], length: 2, message?: string): [T, T, ...T[]];
-export function assertMinArrayLength<T>(arr: T[], length: 3, message?: string): [T, T, T, ...T[]];
-export function assertMinArrayLength<T>(arr: T[], length: 4, message?: string): [T, T, T, T, ...T[]];
-export function assertMinArrayLength<T>(arr: T[], length: 5, message?: string): [T, T, T, T, T, ...T[]];
-export function assertMinArrayLength<T>(arr: T[], length: number, message = 'Array is too short!'): T[] {
+// Asserts that the array has at least `length` elements, throwing a js error if not.
+export function assertMinArrayLength<T>(arr: T[], length: 1, message?: string, showVscError?: boolean): [T, ...T[]];
+export function assertMinArrayLength<T>(arr: T[], length: 2, message?: string, showVscError?: boolean): [T, T, ...T[]];
+export function assertMinArrayLength<T>(arr: T[], length: 3, message?: string, showVscError?: boolean): [T, T, T, ...T[]];
+export function assertMinArrayLength<T>(arr: T[], length: 4, message?: string, showVscError?: boolean): [T, T, T, T, ...T[]];
+export function assertMinArrayLength<T>(arr: T[], length: 5, message?: string, showVscError?: boolean): [T, T, T, T, T, ...T[]];
+export function assertMinArrayLength<T>(
+    arr: T[],
+    length: number,
+    message = 'Array is too short!',
+    showVscError: boolean = true
+): T[] {
     if(arr.length < length){
+        if(showVscError){
+            vscode.window.showErrorMessage(message);
+        }
         throw Error(message);
     }
     return arr;
@@ -183,6 +192,12 @@ export function deepCopy<T>(x0: T): T {
         x1[key] = deepCopy(x0[key]);
     }
     return x1 as T;
+}
+export function getErrorMessage(e: unknown): string {
+    if (e instanceof Error) {
+        return e.message;
+    }
+    return String(e);
 }
 
 
