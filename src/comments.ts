@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { getConfig } from './readConfig';
 import { getVerifiedActiveEditor, verifyDocument } from './docTracker';
 import { assertMinArrayLength } from './utils';
-
+import { getCommentTemplateParts } from './modifyDocs';
 
 export async function appendComment(): Promise<boolean> {
     const editor = getVerifiedActiveEditor();
@@ -13,11 +13,7 @@ export async function appendComment(): Promise<boolean> {
     const line = editor.document.lineAt(editor.selection.end);
     const lineEnd = line.range.end;
     const config = getConfig();
-    const template = config.get('comment.template', '???');
-    const parts = template.split('%content%');
-    if(parts.length !== 2){
-        throw new Error('Invalid template for comment: ' + template);
-    }
+    const parts = getCommentTemplateParts();
     const leadingSpace = line.text.endsWith(' ') ? '' : ' ';
     const snippet = new vscode.SnippetString(leadingSpace + parts[0] + '$1' + parts[1]);
     return editor.insertSnippet(snippet, lineEnd);
@@ -30,14 +26,7 @@ export async function changeLine(): Promise<boolean> {
         return false;
     }
     const line = editor.document.lineAt(editor.selection.end);
-    const lineEnd = line.range.end;
-    const config = getConfig();
-    const template = config.get('comment.template', '???');
-    const parts = assertMinArrayLength(
-        template.split('%content%'),
-        2,
-        'Invalid template for comment: ' + template
-    );
+    const parts = getCommentTemplateParts();
     const snippet = new vscode.SnippetString();
     // Append original line as comment
     snippet.appendText(parts[0]);

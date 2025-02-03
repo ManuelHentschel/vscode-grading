@@ -260,7 +260,7 @@
 				},
 				"grading.comment.template": {
 					"type": "string",
-					"markdownDescription": "Template for a comment. Must contain `%content%` and match the regex.",
+					"markdownDescription": "Template for a comment. Must contain `%content%` exactly once and match the regex.",
 					"default": "##GC: %content%"
 				},
 				"grading.comment.regex": {

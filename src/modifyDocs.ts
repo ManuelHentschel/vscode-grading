@@ -6,6 +6,7 @@ import { pointsToString } from './webview';
 import { verifyDocument, getDocTracker, getVisibleEditors } from './docTracker';
 import { findUris } from './export';
 import { Exercise, MatchedDocument, MatchedExercise, ParsedExercise, PointComment } from './types';
+import { assertMinArrayLength } from './utils';
 
 export async function normalizePointsForAll(): Promise<boolean> {
     const uris = await findUris();
@@ -50,7 +51,7 @@ export function normalizePoints(doc: vscode.TextDocument, edit: vscode.Workspace
         for(const pc of ex.pointsComments){
             const score = pc.isPlaceHolder ? undefined : pc.pointsScore;
             const newContent = makePointsCommentContent(score, ex.atomicPoints, pc.remark.text, config);
-            const newTxt = makeComment(newContent, config);
+            const newTxt = makeComment(newContent);
             if(newTxt !== pc.text){
                 edit.replace(doc.uri, pc.range, newTxt, {
                     needsConfirmation: needsConfirmation,
@@ -108,17 +109,26 @@ export function addPointsComment(
     needsConfirmation ??= config.get<boolean>('confirmModifications', true);
     const rng = parsedEx.range;
     const content = makePointsCommentContent(points, ex.atomicPoints, '', config);
-    const newTxt = makeComment(content, config);
+    const newTxt = makeComment(content);
     edit.insert(parsedEx.document.uri, rng.end, `\n${newTxt}\n`, {
         needsConfirmation: needsConfirmation,
         label: 'Add Points Comments'
     });
 }
 
-export function makeComment(content: string, config?: vscode.WorkspaceConfiguration){
-    config ||= getConfig();
+export function getCommentTemplateParts(): [string, string] {
+    const config = getConfig();
     const template = config.get('comment.template', '???');
-    return template.replace('%content%', content);
+    const parts = template.split('%content%');
+    if(parts.length !== 2){
+        throw new Error('Invalid template for comment: ' + template);
+    }
+    return parts as [string, string];
+}
+
+export function makeComment(content: string): string {
+    const [prefix, postfix] = getCommentTemplateParts();
+    return prefix + content + postfix;
 }
 
 export function makePointsCommentContent(

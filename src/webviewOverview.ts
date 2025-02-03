@@ -1,6 +1,7 @@
 import { findUris, getGlobMatches } from "./export";
 import { HTMLBody, HTMLCode, HTMLDiv, HTMLElement, HTMLHeadedSection, HTMLHeading, HTMLLink, HTMLList } from "./html";
-import { getConfig, getExNames } from "./readConfig";
+import { makeComment } from "./modifyDocs";
+import { getConfig, getExNames, getParsePatterns } from "./readConfig";
 import { getErrorMessage } from "./utils";
 import { getCssAndJsLine } from "./webview";
 import * as vscode from "vscode";
@@ -39,8 +40,30 @@ function makeCommentsConfigSection(): HTMLHeadedSection {
         [
             'This is the comments config section.<br>',
             'It will contain the comments config options.<br>',
+            makeCommentConfigBlock()
         ]
     );
+}
+
+function makeCommentConfigBlock(): HTMLElement {
+    const ret = new HTMLDiv(['Something about comments'], 'commentConfigBlock');
+    ret.content.push(
+        makeConfigEntry('comment.template'),
+        makeConfigEntry('comment.regex'),
+    )
+    const parsePatterns = getParsePatterns();
+    const re = parsePatterns.comment;
+    const exampleString = 'This is an example comment';
+    ret.content.push('Example string:', exampleString, '<br>');
+    const fromTemplate = makeComment(exampleString);
+    ret.content.push('Comment from template:', fromTemplate, '<br>');
+    const match = re.exec(fromTemplate);
+    if(match){
+        ret.content.push('Match:', match[0], '<br>');
+    } else {
+        ret.content.push('Regex does not match!<br>');
+    }
+    return ret;
 }
 
 async function makeExamConfigSection(): Promise<HTMLHeadedSection> {
