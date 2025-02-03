@@ -49,7 +49,7 @@ export class HTMLElement {
             leftTagParts.push('/');
         }
         const leftTag = `<${leftTagParts.join(' ')}>`;
-        const strContent = this.content.map(c => typeof c === 'string' ? c : c.toString()).join('\n');
+        const strContent = this.content.map(c => typeof c === 'string' ? c : c.toString()).join('');
         return leftTag + strContent + rightTag;
     }
 }
@@ -135,5 +135,30 @@ export class HTMLLink extends HTMLElement {
     constructor(href: string, content: HTMLElementary){
         super('a', content);
         this.attributes.href = href;
+    }
+}
+
+export class HTMLCode extends HTMLElement {
+    constructor(content: string){
+        super('code', [content]);
+    }
+}
+
+export class HTMLListEntry extends HTMLElement {
+    constructor(content: HTMLElementary){
+        super('li', content);
+    }
+}
+
+export class HTMLList extends HTMLElement {
+    constructor(entries: (string | HTMLElement)[]){
+        // convert entries to list entries
+        entries = entries.map(e => {
+            if(e instanceof HTMLListEntry){
+                return e;
+            }
+            return new HTMLListEntry(e);
+        })
+        super('ul', entries);
     }
 }

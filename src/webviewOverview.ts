@@ -1,5 +1,5 @@
 import { findUris, getGlobMatches } from "./export";
-import { HTMLBody, HTMLDiv, HTMLElement, HTMLHeadedSection, HTMLHeading, HTMLLink } from "./html";
+import { HTMLBody, HTMLCode, HTMLDiv, HTMLElement, HTMLHeadedSection, HTMLHeading, HTMLLink, HTMLList } from "./html";
 import { getConfig, getExNames } from "./readConfig";
 import { getErrorMessage } from "./utils";
 import { getCssAndJsLine } from "./webview";
@@ -53,34 +53,50 @@ async function makeExamConfigSection(): Promise<HTMLHeadedSection> {
     // Check if the examFiles.pattern is a valid regex
     const config = getConfig();
     const pattern = config.get('examFiles.pattern', '');
+
     // Add the found exercises and solutions to the html
     const globUris = await getGlobMatches();
     const exUris = await findUris();
     const exPaths = exUris.map(uri => vscode.workspace.asRelativePath(uri));
-    htmlElements.push(new HTMLDiv([
+    const globDiv = new HTMLDiv([
         makeConfigEntry('examFiles.globPattern'),
         `${globUris.length} files found by glob pattern.<br>`,
+    ], 'globDiv');
+    htmlElements.push(globDiv);
+
+    const exDiv = new HTMLDiv([
         makeConfigEntry('examFiles.pattern'),
-    ]));
+    ], 'exDiv');
+
     if(exPaths.length === 0){
-        htmlElements.push('No exercises found');
+        exDiv.content.push('No exams found');
     } else {
-        htmlElements.push(new HTMLDiv([
-            'Exercises found:<br>',
-            exPaths.join('<br>')
+        const exList = new HTMLList(exPaths);
+        exList.id = 'exList';
+        exList.classes.push('fileList');
+        exDiv.content.push(new HTMLDiv([
+            'Exams found:<br>',
+            exList
         ]));
     }
+    htmlElements.push(exDiv);
+
+    const solDiv = new HTMLDiv([], 'solDiv');
     const solUris = await findUris(true, true);
     const solPaths = solUris.map(uri => vscode.workspace.asRelativePath(uri));
-    htmlElements.push(makeConfigEntry('examFiles.solutionFiles'));
+    solDiv.content.push(makeConfigEntry('examFiles.solutionFiles'));
     if(solPaths.length === 0){
-        htmlElements.push('No solutions found');
+        solDiv.content.push('No solutions found');
     } else {
-        htmlElements.push(new HTMLDiv([
+        const solList = new HTMLList(solPaths);
+        solList.id = 'solList';
+        solList.classes.push('fileList');
+        solDiv.content.push(new HTMLDiv([
             'Solutions found:<br>',
-            solPaths.join('<br>')
+            solList
         ]));
     }
+    htmlElements.push(solDiv);
 
     return new HTMLHeadedSection(
         2,
@@ -101,13 +117,15 @@ function makeGeneralConfigSection(): HTMLHeadedSection {
         'allowMultiplePointsComments',
         'allowMultipleParsedExercises',
     ].map(makeConfigEntry);
+    const configList = new HTMLList(configEntries);
+    configList.id = 'generalConfigList';
     return new HTMLHeadedSection(
         2,
         'Config - General',
         [
             'The following general configuration entries influence the behavior of the extension.<br>',
             'Click on the corresponding link to see details and change the value.<br>',
-            ...configEntries
+            configList
         ]
     );
 }
@@ -130,12 +148,13 @@ function makeConfigEntry(configName: string): HTMLElement {
 
     // const commandDescription = configEntry.
 
-    const link = new HTMLLink(uri.toString(), configName);
+    const link = new HTMLLink(uri.toString(), new HTMLCode(configName));
     const line = new HTMLDiv([
         link,
         ':',
-        configValueToString(value)
+        new HTMLCode(configValueToString(value))
     ]);
+    line.attributes.class = 'configEntry';
 
     return line;
 }

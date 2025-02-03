@@ -1,0 +1,26 @@
+
+/* More predictable sizing */
+* {
+    box-sizing: border-box;
+}
+
+/* Put red frame around id "solDiv", "exDiv", "globDiv" with the same command */
+#solDiv, #exDiv, #globDiv {
+    border: 1px solid red;
+    margin: 5px 0;
+    padding: 5px;
+}
+
+/* Style list elements inside a list with id "generalConfigList" */
+#generalConfigList li {
+    /* border: 1px solid green; */
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+/* Reduce top/bottom spacing around lists with class "fileList"
+Leave left/right spacing the same */
+.fileList {
+    margin-top: 0;
+    margin-bottom: 0;
+}
