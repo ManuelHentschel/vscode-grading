@@ -1,8 +1,8 @@
-import { findUris, getGlobMatches } from "./export";
+import { findUrisSafe, getGlobMatches } from "./export";
 import { HTMLBody, HTMLCode, HTMLDiv, HTMLElement, HTMLHeadedSection, HTMLHeading, HTMLLink, HTMLList } from "./html";
 import { makeComment } from "./modifyDocs";
 import { getConfig, getExNames, getParsePatterns } from "./readConfig";
-import { getErrorMessage } from "./utils";
+import { checkMinArrayLength, getErrorMessage } from "./utils";
 import { getCssAndJsLine } from "./webview";
 import * as vscode from "vscode";
 
@@ -47,21 +47,34 @@ function makeCommentsConfigSection(): HTMLHeadedSection {
 
 function makeCommentConfigBlock(): HTMLElement {
     const ret = new HTMLDiv(['Something about comments'], 'commentConfigBlock');
+    ret.classes.push('templateDiv');
     ret.content.push(
         makeConfigEntry('comment.template'),
         makeConfigEntry('comment.regex'),
-    )
+    );
     const parsePatterns = getParsePatterns();
     const re = parsePatterns.comment;
     const exampleString = 'This is an example comment';
-    ret.content.push('Example string:', exampleString, '<br>');
+    ret.content.push('Example string:', new HTMLCode(exampleString), '<br>');
     const fromTemplate = makeComment(exampleString);
-    ret.content.push('Comment from template:', fromTemplate, '<br>');
+    ret.content.push('Comment from template:', new HTMLCode(fromTemplate), '<br>');
     const match = re.exec(fromTemplate);
     if(match){
-        ret.content.push('Match:', match[0], '<br>');
+        const match2 = checkMinArrayLength([...match], 2);
+        if(match2){
+            if(match2[1] === exampleString){
+                ret.content.push('Matches the example string!<br>');
+            } else {
+                ret.content.push('Match is not the input:', new HTMLCode(match2[1]), '<br>');
+                ret.classes.push('warning');
+            }
+        } else {
+            ret.content.push('The match does not have a capture group!');
+            ret.classes.push('error');
+        }
     } else {
         ret.content.push('Regex does not match!<br>');
+        ret.classes.push('error');
     }
     return ret;
 }
@@ -73,26 +86,32 @@ async function makeExamConfigSection(): Promise<HTMLHeadedSection> {
         'Click on the corresponding link to see details and change the value.<br>',
     ];
 
-    // Check if the examFiles.pattern is a valid regex
+    // Check if the examFiles.regex is a valid regex
     const config = getConfig();
-    const pattern = config.get('examFiles.pattern', '');
+    const pattern = config.get('examFiles.regex', '');
 
     // Add the found exercises and solutions to the html
     const globUris = await getGlobMatches();
-    const exUris = await findUris();
+    const exUris = await findUrisSafe();
     const exPaths = exUris.map(uri => vscode.workspace.asRelativePath(uri));
     const globDiv = new HTMLDiv([
         makeConfigEntry('examFiles.globPattern'),
         `${globUris.length} files found by glob pattern.<br>`,
     ], 'globDiv');
     htmlElements.push(globDiv);
+    if(globUris.length === 0){
+        globDiv.classes.push('warning');
+    }
 
     const exDiv = new HTMLDiv([
-        makeConfigEntry('examFiles.pattern'),
+        makeConfigEntry('examFiles.regex'),
     ], 'exDiv');
 
     if(exPaths.length === 0){
         exDiv.content.push('No exams found');
+        if(globUris.length > 0){
+            exDiv.classes.push('warning');
+        }
     } else {
         const exList = new HTMLList(exPaths);
         exList.id = 'exList';
@@ -105,11 +124,14 @@ async function makeExamConfigSection(): Promise<HTMLHeadedSection> {
     htmlElements.push(exDiv);
 
     const solDiv = new HTMLDiv([], 'solDiv');
-    const solUris = await findUris(true, true);
+    const solUris = await findUrisSafe(true, true);
     const solPaths = solUris.map(uri => vscode.workspace.asRelativePath(uri));
     solDiv.content.push(makeConfigEntry('examFiles.solutionFiles'));
     if(solPaths.length === 0){
         solDiv.content.push('No solutions found');
+        if(globUris.length > 0){
+            solDiv.classes.push('warning');
+        }
     } else {
         const solList = new HTMLList(solPaths);
         solList.id = 'solList';

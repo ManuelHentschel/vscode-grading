@@ -3,13 +3,13 @@ import * as vscode from 'vscode';
 import { parseAndMatchDoc } from './parseDocument';
 import { getConfig, makeFlatExercises } from './readConfig';
 import { pointsToString } from './webview';
-import { verifyDocument, getDocTracker, getVisibleEditors } from './docTracker';
-import { findUris } from './export';
+import { getDocTracker, getVisibleEditors, verifyDocumentSafe } from './docTracker';
+import { findUrisSafe } from './export';
 import { Exercise, MatchedDocument, MatchedExercise, ParsedExercise, PointComment } from './types';
 import { assertMinArrayLength } from './utils';
 
 export async function normalizePointsForAll(): Promise<boolean> {
-    const uris = await findUris();
+    const uris = await findUrisSafe();
     const docs = await Promise.all(uris.map(vscode.workspace.openTextDocument));
     const edit = new vscode.WorkspaceEdit();
     for(const doc of docs){
@@ -27,7 +27,7 @@ export async function normalizePointsForAll(): Promise<boolean> {
 
 export async function normalizePointsForActive(): Promise<void> {
     const doc = vscode.window.activeTextEditor?.document;
-    const id = verifyDocument(doc);
+    const id = verifyDocumentSafe(doc);
     if(!doc || !id){
         vscode.window.showErrorMessage('No active document/doc not valid!');
         return;
@@ -64,7 +64,7 @@ export function normalizePoints(doc: vscode.TextDocument, edit: vscode.Workspace
 }
 
 export async function addPointsCommentsForAll(): Promise<boolean> {
-    const uris = await findUris();
+    const uris = await findUrisSafe();
     const docs = await Promise.all(uris.map(vscode.workspace.openTextDocument));
     const edit = new vscode.WorkspaceEdit();
     for(const doc of docs){

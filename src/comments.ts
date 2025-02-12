@@ -1,8 +1,7 @@
 
 import * as vscode from 'vscode';
 import { getConfig } from './readConfig';
-import { getVerifiedActiveEditor, verifyDocument } from './docTracker';
-import { assertMinArrayLength } from './utils';
+import { getVerifiedActiveEditor } from './docTracker';
 import { getCommentTemplateParts } from './modifyDocs';
 
 export async function appendComment(): Promise<boolean> {

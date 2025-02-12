@@ -2,11 +2,20 @@ import * as vscode from "vscode";
 import { getConfig, getConfigExercises, getFlatConfigExercises, makeFlatExercises } from './readConfig';
 import { Exercise, MatchedDocument, MatchedExercise } from './types';
 import { verifyUri, getDocTracker, SOLUTION_ID  } from './docTracker';
-import { arraySum, deepCopy, isDefined, isMDoc } from "./utils";
+import { arraySum, deepCopy, getErrorMessage, isDefined, isMDoc } from "./utils";
 
 
-
-export async function findUris(includeSolution: boolean = false, onlySolution: boolean = false): Promise<vscode.Uri[]> {
+export async function findUrisSafe(includeSolution: boolean = false, onlySolution: boolean = false): Promise<vscode.Uri[]> {
+    // call _findUris inside try catch block
+    // return empty array if error occurs
+    try {
+        return await findUris(includeSolution, onlySolution);
+    } catch (error) {
+        vscode.window.showErrorMessage('Error in findUris:' + getErrorMessage(error));
+        return [];
+    }
+}
+async function findUris(includeSolution: boolean = false, onlySolution: boolean = false): Promise<vscode.Uri[]> {
     let uris = await getGlobMatches();
     uris = uris.filter(uri => {
         const id = verifyUri(uri);
@@ -34,7 +43,7 @@ export async function getGlobMatches(): Promise<vscode.Uri[]> {
 
 export async function parseAllFiles(includeSolution: boolean = false): Promise<Map<string, MatchedDocument[]>> {
     const docTracker = getDocTracker();
-    const uris = await findUris(includeSolution);
+    const uris = await findUrisSafe(includeSolution);
     const docPromises = uris.map(vscode.workspace.openTextDocument);
     const docs = await Promise.all(docPromises);
     const ret = new Map<string, MatchedDocument[]>();
@@ -58,7 +67,7 @@ export async function getSolutionExercises(): Promise<MatchedExercise[]> {
 }
 
 export async function getSolutionMDocs(): Promise<MatchedDocument[]> {
-    const uris = await findUris(true, true);
+    const uris = await findUrisSafe(true, true);
     const docPromises = uris.map(vscode.workspace.openTextDocument);
     const docs = await Promise.all(docPromises);
     const docTracker = getDocTracker();

@@ -4,11 +4,21 @@
     box-sizing: border-box;
 }
 
-/* Put red frame around id "solDiv", "exDiv", "globDiv" with the same command */
-#solDiv, #exDiv, #globDiv {
-    border: 1px solid red;
+/* Spacing around "solDiv", "exDiv", "globDiv" */
+#solDiv, #exDiv, #globDiv, div.templateDiv {
     margin: 5px 0;
     padding: 5px;
+}
+
+
+/* Put yellow frame around div with class "warning" */
+.warning {
+    border: 1px solid yellow;
+}
+
+/* Put red frame around div with class "error" */
+.error {
+    border: 1px solid red;
 }
 
 /* Style list elements inside a list with id "generalConfigList" */

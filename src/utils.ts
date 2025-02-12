@@ -113,6 +113,19 @@ export function assertMinArrayLength<T>(
     return arr;
 }
 
+// Checks that the array has at least `length` elements, returning `undefined` if not.
+export function checkMinArrayLength<T>(arr: T[], length: 1): [T, ...T[]] | undefined;
+export function checkMinArrayLength<T>(arr: T[], length: 2): [T, T, ...T[]] | undefined;
+export function checkMinArrayLength<T>(arr: T[], length: 3): [T, T, T, ...T[]] | undefined;
+export function checkMinArrayLength<T>(arr: T[], length: 4): [T, T, T, T, ...T[]] | undefined;
+export function checkMinArrayLength<T>(arr: T[], length: 5): [T, T, T, T, T, ...T[]] | undefined;
+export function checkMinArrayLength<T>(arr: T[], length: number): T[] | undefined {
+    if(arr.length < length){
+        return undefined;
+    }
+    return arr;
+}
+
 
 export type RangeOption = "asIs" | "firstLine" | "firstNonEmpty" | "lastLine" | "lastNonEmpty" | "withoutTrailing";
 

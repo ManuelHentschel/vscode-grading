@@ -4,8 +4,8 @@ import * as path from 'path';
 import * as types from './types';
 import { getConfig } from './readConfig';
 import { parseAndMatchDoc } from './parseDocument';
-import { BackgroundDecos, DecoManager, DecoWithRanges } from './deco';
-import { assertMinArrayLength, computeHashForDoc, getUniqueEntries } from './utils';
+import { DecoManager, DecoWithRanges } from './deco';
+import { assertMinArrayLength, computeHashForDoc, getErrorMessage, getUniqueEntries } from './utils';
 import { statSync } from 'fs';
 import { refreshWebviews } from './webview';
 
@@ -111,7 +111,7 @@ export class DocTracker {
         if(!doc){
             return;
         }
-        const id = verifyDocument(doc);
+        const id = verifyDocumentSafe(doc);
         if(!id){
             return;
         }
@@ -191,14 +191,23 @@ export function getVerifiedActiveEditor(): vscode.TextEditor | undefined {
     if(!editor){
         return undefined;
     }
-    const id = verifyDocument(editor.document);
+    const id = verifyDocumentSafe(editor.document);
     if(!id){
         return undefined;
     }
     return editor;
 }
 
-export function verifyDocument(doc: vscode.TextDocument | undefined): string | undefined {
+
+export function verifyDocumentSafe(doc: vscode.TextDocument | undefined): string | undefined {
+    try {
+        return verifyDocument(doc);
+    } catch (error) {
+        vscode.window.showErrorMessage('Error in verifyDocument:' + getErrorMessage(error));
+        return undefined;
+    }
+}
+function verifyDocument(doc: vscode.TextDocument | undefined): string | undefined {
     return verifyUri(doc?.uri);
 }
 
@@ -211,7 +220,7 @@ export function verifyUri(uri: vscode.Uri | undefined): string | undefined {
         return SOLUTION_ID;
     }
     const config = getConfig();
-    const pattern = config.get('examFiles.pattern', '(.*)');
+    const pattern = config.get('examFiles.regex', '(.*)');
     const re = new RegExp(pattern);
     const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
     const absPath = uri.fsPath;

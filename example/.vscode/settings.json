@@ -22,7 +22,7 @@
 
     // specify the file naming used
     "grading.examFiles.globPattern": "**/*.R",
-    "grading.examFiles.pattern": "^exams[/\\\\](\\d*).*\\.R$",
+    "grading.examFiles.regex": "^exams[/\\\\](\\d*).*\\.R$",
     "grading.examFiles.solutionFiles": [
         "solutionEx1.R",
         "solutionEx2.R"

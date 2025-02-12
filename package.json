@@ -283,7 +283,7 @@
 					"description": "Glob pattern to find candidates for exam and solution files.",
 					"default": "**/*"
 				},
-				"grading.examFiles.pattern": {
+				"grading.examFiles.regex": {
 					"type": "string",
 					"default": "(.*)",
 					"markdownDescription": "RegExp with one capture group (1. `student id`) that indicates an exam file path if matched."
