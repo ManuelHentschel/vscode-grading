@@ -294,10 +294,5 @@ export function findContainingExercise(exercises: types.MatchedExercise[], range
 }
 
 export function findContainingParsedExercise(parsedExercises: types.ParsedExercise[], range: vscode.Range | vscode.Position): types.ParsedExercise | undefined {
-    for(const pex of parsedExercises){
-        if(pex.range.contains(range)){
-            return pex;
-        }
-    }
-    return undefined;
+    return parsedExercises.find(pex => pex.range.contains(range));
 }
